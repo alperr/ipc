@@ -4,10 +4,11 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <stdlib.h>
+#include "./ipc.h"
 
 const uint32_t BUFFER_SIZE = 1024;
-const char *READER_SOCKET_PATH = "/tmp/nodejs_c_bridge.sock";
-const char *WRITER_SOCKET_PATH = "/tmp/c_nodejs_bridge.sock";
+const char *READER_SOCKET_PATH = "/tmp/ntoc.sock";
+const char *WRITER_SOCKET_PATH = "/tmp/cton.sock";
 uint32_t writer_socket;
 
 int32_t create_writer()
@@ -35,7 +36,7 @@ int32_t create_writer()
 	return fd;
 }
 
-void nodejs_listen(void (*onmessage)(uint8_t *message, uint32_t message_size))
+void ipc_listen(void (*onmessage)(uint8_t *message, uint32_t message_size))
 {
 	struct sockaddr_un addr;
 	uint8_t *buffer = malloc(BUFFER_SIZE);
@@ -94,7 +95,7 @@ void nodejs_listen(void (*onmessage)(uint8_t *message, uint32_t message_size))
 	}
 }
 
-void nodejs_send(uint8_t *message, uint32_t message_size)
+void ipc_send(uint8_t *message, uint32_t message_size)
 {
 	write(writer_socket, message, message_size);
 }
